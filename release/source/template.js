@@ -6,8 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Template_1;
-"use strict";
 /**
  * Copyright (C) 2018 Silas B. Domingos
  * This source code is licensed under the MIT License as described in the file LICENSE.
@@ -18,7 +16,7 @@ const Control = require("@singleware/ui-control");
 /**
  * Import template class.
  */
-let Template = Template_1 = class Template extends Control.Component {
+let Template = class Template extends Control.Component {
     /**
      * Default constructor.
      * @param properties Import properties.
@@ -40,10 +38,7 @@ let Template = Template_1 = class Template extends Control.Component {
          * Import skeleton.
          */
         this.skeleton = (DOM.create("div", { slot: this.properties.slot, class: this.properties.class }, this.children));
-        /**
-         * Import elements.
-         */
-        this.elements = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.wrapper);
+        DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.wrapper);
         this.bindProperties();
         this.assignProperties();
     }
@@ -55,8 +50,7 @@ let Template = Template_1 = class Template extends Control.Component {
         if (response.status === 200 || response.status === 304) {
             const content = await response.text();
             Class.perform(this, () => {
-                DOM.clear(this.wrapper);
-                DOM.append(this.wrapper, content);
+                DOM.append(DOM.clear(this.wrapper), content);
             });
         }
     }
@@ -64,21 +58,19 @@ let Template = Template_1 = class Template extends Control.Component {
      * Bind exposed properties to the custom element.
      */
     bindProperties() {
-        Object.defineProperties(this.skeleton, {
-            path: super.bindDescriptor(this, Template_1.prototype, 'path')
-        });
+        this.bindComponentProperties(this.skeleton, ['path']);
     }
     /**
      * Assign all element properties.
      */
     assignProperties() {
-        Control.assignProperties(this, this.properties, ['path']);
+        this.assignComponentProperties(this.properties, ['path']);
     }
     /**
      * Get imported path.
      */
     get path() {
-        return this.states.path || '';
+        return this.states.path;
     }
     /**
      * Set import path.
@@ -105,9 +97,6 @@ __decorate([
 ], Template.prototype, "skeleton", void 0);
 __decorate([
     Class.Private()
-], Template.prototype, "elements", void 0);
-__decorate([
-    Class.Private()
 ], Template.prototype, "load", null);
 __decorate([
     Class.Private()
@@ -121,7 +110,7 @@ __decorate([
 __decorate([
     Class.Public()
 ], Template.prototype, "element", null);
-Template = Template_1 = __decorate([
+Template = __decorate([
     Class.Describe()
 ], Template);
 exports.Template = Template;

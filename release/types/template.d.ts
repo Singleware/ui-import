@@ -18,10 +18,6 @@ export declare class Template extends Control.Component<Properties> {
      */
     private skeleton;
     /**
-     * Import elements.
-     */
-    private elements;
-    /**
      * Load the current path.
      */
     private load;

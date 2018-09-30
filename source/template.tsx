@@ -8,6 +8,7 @@ import * as Control from '@singleware/ui-control';
 
 import { Properties } from './properties';
 import { Element } from './element';
+import { States } from './states';
 
 /**
  * Import template class.
@@ -20,29 +21,23 @@ export class Template extends Control.Component<Properties> {
   @Class.Private()
   private states = {
     path: ''
-  };
+  } as States;
 
   /**
    * Import wrapper.
    */
   @Class.Private()
-  private wrapper: HTMLDivElement = <div /> as Element;
+  private wrapper = <div /> as HTMLElement;
 
   /**
    * Import skeleton.
    */
   @Class.Private()
-  private skeleton: Element = (
+  private skeleton = (
     <div slot={this.properties.slot} class={this.properties.class}>
       {this.children}
     </div>
   ) as Element;
-
-  /**
-   * Import elements.
-   */
-  @Class.Private()
-  private elements: ShadowRoot = DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.wrapper) as ShadowRoot;
 
   /**
    * Load the current path.
@@ -53,8 +48,7 @@ export class Template extends Control.Component<Properties> {
     if (response.status === 200 || response.status === 304) {
       const content = await response.text();
       Class.perform(this, () => {
-        DOM.clear(this.wrapper);
-        DOM.append(this.wrapper, content);
+        DOM.append(DOM.clear(this.wrapper), content);
       });
     }
   }
@@ -64,9 +58,7 @@ export class Template extends Control.Component<Properties> {
    */
   @Class.Private()
   private bindProperties(): void {
-    Object.defineProperties(this.skeleton, {
-      path: super.bindDescriptor(this, Template.prototype, 'path')
-    });
+    this.bindComponentProperties(this.skeleton, ['path']);
   }
 
   /**
@@ -74,7 +66,7 @@ export class Template extends Control.Component<Properties> {
    */
   @Class.Private()
   private assignProperties(): void {
-    Control.assignProperties(this, this.properties, ['path']);
+    this.assignComponentProperties(this.properties, ['path']);
   }
 
   /**
@@ -84,6 +76,7 @@ export class Template extends Control.Component<Properties> {
    */
   constructor(properties?: Properties, children?: any[]) {
     super(properties, children);
+    DOM.append(this.skeleton.attachShadow({ mode: 'closed' }), this.wrapper);
     this.bindProperties();
     this.assignProperties();
   }
@@ -93,7 +86,7 @@ export class Template extends Control.Component<Properties> {
    */
   @Class.Public()
   public get path(): string {
-    return this.states.path || '';
+    return this.states.path;
   }
 
   /**
